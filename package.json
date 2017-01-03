@@ -4,7 +4,8 @@
   "description": "Tutorial for RxJS",
   "main": "index.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "dev": "lite-server -c bs-config.json"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,9 @@
     "merge-stream": "^1.0.0",
     "require-dir": "^0.3.1",
     "rxjs": "^5.0.2",
+    "tsify": "^3.0.0",
+    "typescript": "^2.1.4",
+    "typings": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"

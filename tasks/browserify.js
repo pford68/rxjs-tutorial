@@ -1,44 +1,43 @@
 /**
- * Tasks related to Browserify
+ * Tasks related to Browserify.  Adds watchify to watch for changes
  */
 
-var gulp = require('gulp'),
+let gulp = require('gulp'),
+    gutil = require('gulp-util'),
     browserify = require("browserify"),
     gulpif = require('gulp-if'),
     streamify = require('gulp-streamify'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
-    sourcemaps = require('gulp-sourcemaps'),
-    watchify = require('watchify'),
-    config = require("config"),
+    tsify = require('tsify'),
+    config = require('./config/browserify.cfg'),
     bundler;
 
 
-function bundle(){
+function bundle() {
+    let entryPoint = './src/ts/main.ts';
     return bundler.bundle()
-        .pipe(source('./src/js/main.js'))
+        .pipe(source(entryPoint))
         .pipe(gulpif(config.debug === false, streamify(uglify())))
         .pipe(rename("main.js"))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-        // Add transformation tasks to the pipeline here.
-        .pipe(sourcemaps.write('./')) // writes .map file
         .pipe(gulp.dest('./build/js'));
 }
 
-var opts = {
-    entries: './main.js',
-    basedir: './src/js',
-    debug: config.debug,
-    cache: {},
-    packageCache: {}
-};
-bundler = watchify(browserify(opts), {poll: true})
-    .transform('babelify', { presets: 'latest'})
-    .on('update', bundle);
+bundler = browserify(config.browserify)
+    .plugin(tsify)
+    .transform('babelify', { extensions: ['.ts', '.js'] })
+    .on('update', bundle)          // Absolutely necessary for the server to reload, and probably to re-bundle
+    .on('error', (err) => {
+        gutil.log(`Browserify error: ${err.message}`);
+        // end this stream
+        this.emit('end');
+    });
 
+
+
+
+//========================================================= Tasks
 /*
  Browserify task.
 
