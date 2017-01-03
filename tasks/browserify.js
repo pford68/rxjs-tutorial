@@ -26,7 +26,6 @@ function bundle() {
 
 bundler = browserify(config.browserify)
     .plugin(tsify)
-    .transform('babelify', { extensions: ['.ts', '.js'] })
     .on('update', bundle)          // Absolutely necessary for the server to reload, and probably to re-bundle
     .on('error', (err) => {
         gutil.log(`Browserify error: ${err.message}`);
