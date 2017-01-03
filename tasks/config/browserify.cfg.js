@@ -14,18 +14,8 @@ Object.assign(config, {
         cache: {},
         packageCache: {},
         plugin: [
-            [watchify, {poll:true}]   // poll = true has been necessary on my work laptop.
+            [watchify, {poll:true}]
         ]
-    },
-    tsify: {
-        target: 'ES6',                  // Necessary, even though the app builds without it when Watchify is active.
-        noImplicitAny: false,
-        experimentalDecorators: true,
-        emitDecoratorMetadata: true,
-        noEmitHelpers: false            // CartController.ts:7 Uncaught ReferenceError: __decorate is not defined(…)
-    },
-    babelify: {
-        extensions: ['.ts', '.js']
     }
 });
 
