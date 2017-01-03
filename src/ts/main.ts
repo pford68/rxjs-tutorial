@@ -2,24 +2,29 @@
  *
  */
 
-import { Observable, Observer } from 'rxjs'
+import {Observable} from 'rxjs'
 
-let numbers = [1,5,10];
-let source = Observable.from(numbers);
+let numbers = [1, 5, 10];
+let source = Observable.create(observer => {
 
-class MyObserver implements Observer<number>{
+    let index = 0;
+    let produce = () => {
+        observer.next(numbers[index++]);
 
-    next(value){
-        console.log(`value:  ${value}`);
-    }
+        if (index < numbers.length) {
+            setTimeout(produce, 2000);
+        } else {
+            observer.complete();
+        }
+    };
 
-    error(e){
-        console.log(`error:  ${e}`);
-    }
+    produce();
 
-    complete(){
-        console.log('complete');
-    }
-}
+}).map(n => n * 2).filter(n => n > 4);
 
-source.subscribe(new MyObserver());
+
+source.subscribe(
+    value => console.log(`value: ${value}`),
+    e => console.log(`error:  ${e}`),
+    () => console.log('complete')
+);
